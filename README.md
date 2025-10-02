@@ -1,0 +1,1 @@
+# TSEA App (Minimal placeholder)
