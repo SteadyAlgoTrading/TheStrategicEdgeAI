@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>TSEA App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <meta name="theme-color" content="#0B1220">
+  <style>
+    :root{ --ink:#0B1220; --gold:#D4AF37; --cyan:#00C2FF; --bg:#0B1220; --card:#0F172A; --text:#E5E7EB; --ring:#334155; --radius:20px; }
+    body{ background: linear-gradient(180deg,#0B1220 0%,#0B1220 60%,#111827 100%); color:var(--text); font-family: Inter, system-ui; }
+    .headline{ font-family: Outfit, Inter, sans-serif; }
+    .card{ border-radius: var(--radius); background: var(--card); box-shadow: 0 10px 24px rgba(0,0,0,.35); }
+    .btn{ border-radius: var(--radius); padding:.7rem 1rem; font-weight:600; }
+    .btn-primary{ background: linear-gradient(135deg,#E8C766, var(--cyan)); color:#0B1220; }
+    .btn-muted{ background:#111827; border:1px solid var(--ring); color:var(--text); }
+    input, textarea, select{ background:#0B1320; color:var(--text); border:1px solid var(--ring); border-radius:14px; padding:.55rem .75rem; }
+    .chip{ background:#0B1220; border:1px solid var(--ring); padding:.25rem .5rem; border-radius:9999px; font-size:.7rem; text-transform:uppercase; letter-spacing:.08em; color:#cbd5e1; }
+  </style>
+</head>
+<body x-data="tseaApp()">
+  <div class="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6">
+    <header class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-3">
+        <img src="/public/brand-logo.jpg" alt="TSEA Logo" class="w-12 h-12 rounded-xl object-cover border border-[#334155]">
+        <div>
+          <h1 class="headline text-xl font-bold">The Strategic Edge AI</h1>
+          <p class="text-xs text-slate-400 -mt-0.5">Evaluate • Design • Generate • Evolve</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="chip" x-text="`Plan: ${state.user?.plan || '—'}`"></span>
+        <button class="btn btn-muted" @click="logout()" x-show="state.authed">Logout</button>
+      </div>
+    </header>
+
+    <nav class="mb-6">
+      <div class="flex flex-wrap gap-2">
+        <a class="btn btn-muted" :class="page==='dashboard' && 'ring-2 ring-[#D4AF37]'" @click="navigate('dashboard')">Dashboard</a>
+        <a class="btn btn-muted" :class="page==='evaluate' && 'ring-2 ring-[#D4AF37]'" @click="navigate('evaluate')">Evaluate</a>
+        <a class="btn btn-muted" :class="page==='design' && 'ring-2 ring-[#D4AF37]'" @click="navigate('design')">Design</a>
+        <a class="btn btn-muted" :class="page==='generate' && 'ring-2 ring-[#D4AF37]'" @click="navigate('generate')">Generate</a>
+        <a class="btn btn-muted" :class="page==='evolve' && 'ring-2 ring-[#D4AF37]'" @click="navigate('evolve')">Evolve</a>
+        <a class="btn btn-muted" :class="page==='learn' && 'ring-2 ring-[#D4AF37]'" @click="navigate('learn')">Learn</a>
+        <a class="btn btn-muted" :class="page==='billing' && 'ring-2 ring-[#D4AF37]'" @click="navigate('billing')">Billing</a>
+        <a class="btn btn-muted" :class="page==='account' && 'ring-2 ring-[#D4AF37]'" @click="navigate('account')">Account</a>
+      </div>
+    </nav>
+
+    <div class="card p-6 mb-6" x-show="!state.authed">
+      <h3 class="headline font-semibold mb-2">Sign in</h3>
+      <div class="grid md:grid-cols-3 gap-3">
+        <input placeholder="Email" x-model="auth.email">
+        <input placeholder="Password" type="password" x-model="auth.password">
+        <button class="btn btn-primary" @click="login()">Sign In</button>
+      </div>
+      <p class="text-xs text-slate-400 mt-2">No account? <a class="underline" @click="signup()">Create one</a>. Default plan: Basic.</p>
+    </div>
+
+    <!-- Dashboard -->
+    <section x-show="page==='dashboard' && state.authed" class="grid md:grid-cols-3 gap-4">
+      <div class="card p-5 md:col-span-2">
+        <h3 class="headline font-semibold mb-2">Welcome</h3>
+        <p class="text-sm text-slate-300">Follow: Evaluate → Design → Generate → Evolve.</p>
+        <div class="flex gap-2 mt-3">
+          <button class="btn btn-primary" @click="navigate('evaluate')">Start Evaluate</button>
+          <button class="btn btn-muted" @click="navigate('learn')">Open Curriculum</button>
+        </div>
+      </div>
+      <div class="card p-5">
+        <h3 class="headline font-semibold mb-2">Usage</h3>
+        <p class="text-sm">Daily chats: <span x-text="state.usageToday"></span></p>
+        <button class="btn btn-muted mt-2" @click="resetUsage()">Reset (dev)</button>
+      </div>
+    </section>
+
+    <!-- Evaluate -->
+    <section x-show="page==='evaluate' && state.authed" class="grid lg:grid-cols-3 gap-4">
+      <div class="card p-5 lg:col-span-2">
+        <h3 class="headline font-semibold mb-2">Evaluate Assistant</h3>
+        <p class="text-sm text-slate-300 mb-3">Ask about regimes and indicator basics. No code here.</p>
+        <div class="flex gap-2 mb-2">
+          <input class="w-full" placeholder="How do ADX and RSI avoid chop?" x-model="chat.evaluate.input" @keydown.enter.prevent="sendMessage('evaluate')">
+          <button class="btn btn-primary" @click="sendMessage('evaluate')">Ask</button>
+        </div>
+        <div class="space-y-3 max-h-96 overflow-auto">
+          <template x-for="m in chat.evaluate.messages">
+            <div class="bg-[#0b1320] border border-[#334155] rounded-xl p-3">
+              <div class="text-xs text-slate-400" x-text="m.role"></div>
+              <div class="whitespace-pre-wrap" x-text="m.content"></div>
+            </div>
+          </template>
+        </div>
+      </div>
+      <div class="card p-5">
+        <h4 class="font-semibold mb-2">Quick Prompts</h4>
+        <div class="space-y-2 text-sm">
+          <button class="underline" @click="quick('evaluate','Define trend vs range with EMAs + ADX.')">Trend vs Range</button><br>
+          <button class="underline" @click="quick('evaluate','Common RSI thresholds for 1m momentum entries?')">RSI thresholds</button><br>
+          <button class="underline" @click="quick('evaluate','Explain ATR-based stops and 3R targets for scalping.')">ATR stops</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Design -->
+    <section x-show="page==='design' && state.authed" class="grid lg:grid-cols-3 gap-4">
+      <div class="card p-5 lg:col-span-2">
+        <h3 class="headline font-semibold mb-2">Design Assistant</h3>
+        <p class="text-sm text-slate-300 mb-3">Describe your rules. We convert them to a clean spec.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+          <input placeholder="Instrument (ES, NQ, CL)" x-model="designer.instrument">
+          <input placeholder="Timeframe (e.g., 1m)" x-model="designer.timeframe">
+          <input placeholder="Session (PT, e.g., 06:30–12:59)" x-model="designer.session">
+          <input placeholder="Indicators (e.g., EMA20/50, RSI, ADX, ATR)" x-model="designer.indicators">
+          <textarea rows="3" class="md:col-span-2" placeholder="Rules & filters..." x-model="designer.rules"></textarea>
+        </div>
+        <div class="flex gap-2 mb-3">
+          <button class="btn btn-primary" @click="sendDesign()">Draft Spec</button>
+          <button class="btn btn-muted" @click="saveProject()">Save Project</button>
+        </div>
+        <pre class="bg-[#0b1320] border border-[#334155] rounded-2xl p-4 text-xs overflow-auto" x-text="designer.output"></pre>
+      </div>
+      <div class="card p-5">
+        <h4 class="font-semibold mb-2">Templates</h4>
+        <button class="btn btn-muted w-full mb-2" @click="applyTemplate('ES_1M_EMA_RSI_ADX')">ES 1m EMA/RSI/ADX</button>
+        <button class="btn btn-muted w-full" @click="applyTemplate('NQ_1M_EMA_RSI_ADX')">NQ 1m EMA/RSI/ADX</button>
+      </div>
+    </section>
+
+    <!-- Generate -->
+    <section x-show="page==='generate' && state.authed" class="grid lg:grid-cols-3 gap-4">
+      <div class="card p-5 lg:col-span-2">
+        <div class="flex items-center justify-between">
+          <h3 class="headline font-semibold mb-2">Generate Assistant</h3>
+          <span class="chip">Requires Pro+</span>
+        </div>
+        <p class="text-sm text-slate-300 mb-3">Generate NinjaScript or Pine v6 templates from your spec.</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+          <select x-model="generator.lang">
+            <option value="ninjatrader">NinjaScript (C#)</option>
+            <option value="pinescript">TradingView (Pine v6)</option>
+          </select>
+          <input class="md:col-span-2" placeholder="Project ID (from Save)" x-model="generator.projectId">
+        </div>
+        <div class="flex gap-2 mb-3">
+          <button class="btn btn-primary" :disabled="!canUse('generate')" @click="generateCode()">Generate Code</button>
+        </div>
+        <pre class="bg-[#0b1320] border border-[#334155] rounded-2xl p-4 text-xs overflow-auto" x-text="generator.output"></pre>
+      </div>
+      <div class="card p-5">
+        <h4 class="font-semibold mb-2">Guidance</h4>
+        <p class="text-sm text-slate-300">Use stronger entry confirmation (e.g., higher ADX), tight ATR stops (~0.6×), 3R targets, and AM session focus.</p>
+      </div>
+    </section>
+
+    <!-- Evolve -->
+    <section x-show="page==='evolve' && state.authed" class="grid lg:grid-cols-3 gap-4">
+      <div class="card p-5 lg:col-span-2">
+        <div class="flex items-center justify-between">
+          <h3 class="headline font-semibold mb-2">Evolve Assistant</h3>
+          <span class="chip">Requires Elite</span>
+        </div>
+        <p class="text-sm text-slate-300 mb-3">Upload backtests; we summarize PF, Win%, DD, MAE/MFE, and next steps.</p>
+        <form class="mb-3" @submit.prevent="uploadBacktest">
+          <input type="file" class="block w-full text-sm" id="fileInput">
+          <div class="flex gap-2 mt-2">
+            <button class="btn btn-primary" :disabled="!canUse('evolve')" type="submit">Upload</button>
+            <button class="btn btn-muted" type="button" @click="demoEvolve()">Demo</button>
+          </div>
+        </form>
+        <pre class="bg-[#0b1320] border border-[#334155] rounded-2xl p-4 text-xs overflow-auto" x-text="evolve.output"></pre>
+      </div>
+      <div class="card p-5">
+        <h4 class="font-semibold mb-2">What We Analyze</h4>
+        <ul class="list-disc ml-5 text-sm text-slate-300">
+          <li>Time-of-day & volatility regimes</li>
+          <li>Parameter sensitivity/brittleness</li>
+          <li>Stop/target & slippage robustness</li>
+          <li>Ranked next experiments</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Learn -->
+    <section x-show="page==='learn' && state.authed" class="card p-5">
+      <h3 class="headline font-semibold mb-2">Curriculum</h3>
+      <div class="text-sm" x-html="learn.html"></div>
+    </section>
+
+    <!-- Billing -->
+    <section x-show="page==='billing' && state.authed" class="grid md:grid-cols-2 gap-4">
+      <div class="card p-5">
+        <h3 class="headline font-semibold mb-2">Choose a Plan</h3>
+        <div class="space-y-3">
+          <div class="bg-[#0b1320] border border-[#334155] rounded-2xl p-3">
+            <div class="font-semibold">Basic</div>
+            <div class="text-sm text-slate-300">Evaluate & Design • $47/mo</div>
+            <button class="btn btn-muted mt-2" @click="setPlan('Basic')">Select</button>
+          </div>
+          <div class="bg-[#0b1320] border border-[#334155] rounded-2xl p-3">
+            <div class="font-semibold">Pro</div>
+            <div class="text-sm text-slate-300">+ Generate • $147/mo</div>
+            <button class="btn btn-primary mt-2" @click="checkout('pro')">Subscribe</button>
+          </div>
+          <div class="bg-[#0b1320] border border-[#334155] rounded-2xl p-3">
+            <div class="font-semibold">Elite</div>
+            <div class="text-sm text-slate-300">+ Evolve • $297/mo</div>
+            <button class="btn btn-primary mt-2" @click="checkout('elite')">Subscribe</button>
+          </div>
+        </div>
+      </div>
+      <div class="card p-5">
+        <h3 class="headline font-semibold mb-2">Billing & Invoices</h3>
+        <p class="text-sm text-slate-300">Stripe Checkout & Portal integrate server-side. In dev, we simulate if keys are missing.</p>
+        <button class="btn btn-muted" @click="openPortal()">Open Customer Portal</button>
+      </div>
+    </section>
+
+    <!-- Account -->
+    <section x-show="page==='account' && state.authed" class="card p-5">
+      <h3 class="headline font-semibold mb-2">Account</h3>
+      <p class="text-sm">Email: <span x-text="state.user?.email"></span></p>
+      <p class="text-sm">Plan: <span x-text="state.user?.plan"></span></p>
+      <div class="mt-3"><button class="btn btn-muted" @click="downgradeToBasic()">Downgrade to Basic</button></div>
+    </section>
+  </div>
+
+<script>
+function tseaApp(){
+  return {
+    page:'dashboard',
+    state:{ authed:false, user:null, usageToday:0 },
+    auth:{ email:'', password:'' },
+    chat:{ evaluate:{ input:'', messages:[] } },
+    designer:{ instrument:'', timeframe:'', session:'', indicators:'', rules:'', output:'' },
+    generator:{ lang:'ninjatrader', projectId:'', output:'' },
+    evolve:{ output:'' },
+    learn:{ html:'Loading curriculum...' },
+
+    async init(){ await this.getSession(); if(this.state.authed){ this.loadCurriculum(); } },
+    navigate(p){ this.page=p; },
+    canUse(f){ if(f==='generate') return this.state.user?.plan==='Pro'||this.state.user?.plan==='Elite'; if(f==='evolve') return this.state.user?.plan==='Elite'; return true; },
+
+    async signup(){ const r=await fetch('/api/auth/signup',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email:this.auth.email, password:this.auth.password }) }); if(r.ok){ await this.getSession(); } else alert('Sign up failed'); },
+    async login(){ const r=await fetch('/api/auth/login',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email:this.auth.email, password:this.auth.password }) }); if(r.ok){ await this.getSession(); } else alert('Login failed'); },
+    async logout(){ await fetch('/api/auth/logout',{ method:'POST' }); this.state.authed=false; this.state.user=null; },
+
+    async getSession(){ const r=await fetch('/api/auth/session'); const d=await r.json(); this.state.authed=d.authed; this.state.user=d.user||null; if(this.state.authed) this.page='dashboard'; },
+
+    async sendMessage(a){ const input=this.chat[a].input.trim(); if(!input) return; this.chat[a].messages.push({role:'you', content: input}); this.chat[a].input=''; const r=await fetch(`/api/chat/${a}`,{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ message: input }) }); const data=await r.json(); this.chat[a].messages.push({role:'assistant', content: data.reply || '(no response)'}); },
+    quick(a,t){ this.chat[a].input=t; this.sendMessage(a); },
+
+    async sendDesign(){ const spec={ instrument:this.designer.instrument, timeframe:this.designer.timeframe, session:this.designer.session, indicators:this.designer.indicators, rules:this.designer.rules }; const r=await fetch('/api/design/draft',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(spec) }); const d=await r.json(); this.designer.output=d.spec || 'No spec'; },
+    applyTemplate(name){ if(name==='ES_1M_EMA_RSI_ADX'){ this.designer.instrument='ES'; this.designer.timeframe='1m'; this.designer.session='06:30–12:59 PT'; this.designer.indicators='EMA20/50, RSI, ADX, ATR'; this.designer.rules='Long: EMA20>EMA50, RSI>55, ADX>25; Short inverse; ATR stop 0.6×; target 3R; session filter.'; } if(name==='NQ_1M_EMA_RSI_ADX'){ this.designer.instrument='NQ'; this.designer.timeframe='1m'; this.designer.session='06:30–12:59 PT'; this.designer.indicators='EMA20/50, RSI, ADX, ATR'; this.designer.rules='Trend bias via EMA stack; RSI>55 longs / <45 shorts; ADX>28; ATR stops/targets; time filter.'; } },
+    async saveProject(){ const r=await fetch('/api/projects/save',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ spec:this.designer.output })}); alert((await r.json()).status || 'Saved'); },
+
+    async generateCode(){ const r=await fetch('/api/generate',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ projectId:this.generator.projectId, lang:this.generator.lang }) }); const d=await r.json(); this.generator.output = d.code || 'No code'; },
+
+    async uploadBacktest(){ const file=document.getElementById('fileInput').files[0]; if(!file) return alert('Choose a file'); const form=new FormData(); form.append('file', file); const r=await fetch('/api/evolve/upload',{ method:'POST', body: form }); const d=await r.json(); this.evolve.output=d.analysis || 'Uploaded'; },
+    async demoEvolve(){ this.evolve.output='PF: 1.35 | Win%: 48.1 | Max DD: -$2,200 | Avg Trade: $22.4 | MAE: $66 | MFE: $112 → Next: ADX>28, 07:00–11:30 PT, ATR stop 0.55×, 3R target; review Fridays.'; },
+
+    async loadCurriculum(){ const r=await fetch('/api/content/curriculum'); const data=await r.json(); const rows=data.lessons.map(l=>`<tr><td>${l.tier}</td><td>${l.phase}</td><td>${l.lesson_id}</td><td>${l.title}</td><td>${l.duration_min}m</td></tr>`).join(''); this.learn.html=`<div class='overflow-x-auto'><table class='w-full text-sm'><thead><tr><th class='text-left p-2'>Tier</th><th class='text-left p-2'>Phase</th><th class='text-left p-2'>ID</th><th class='text-left p-2'>Title</th><th class='text-left p-2'>Duration</th></tr></thead><tbody>${rows}</tbody></table></div>`; },
+
+    async checkout(tier){ const r=await fetch('/api/billing/checkout',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ tier })}); const d=await r.json(); if(d.url) window.location=d.url; else alert('Simulated plan set in dev.'); },
+    async openPortal(){ const r=await fetch('/api/billing/portal',{ method:'POST' }); const d=await r.json(); if(d.url) window.location=d.url; else alert('Portal not configured'); },
+    async setPlan(plan){ const r=await fetch('/api/account/plan',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ plan })}); const d=await r.json(); if(d.user){ this.state.user=d.user; alert('Plan updated'); } },
+    async downgradeToBasic(){ await this.setPlan('Basic'); },
+    resetUsage(){ this.state.usageToday=0; }
+  }
+}
+document.addEventListener('alpine:init', ()=>{ const app=document.querySelector('body').__x?.$data; if(app && app.init) app.init(); });
+</script>
+</body>
+</html>
