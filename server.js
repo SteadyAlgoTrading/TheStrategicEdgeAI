@@ -1,4 +1,4 @@
-// server.js — The Strategic Edge AI (Assistants v2 + explicit landing)
+// server.js — The Strategic Edge AI (Assistants v2 + explicit landing + robust extractor)
 import 'dotenv/config';
 import express from 'express';
 import path from 'path';
@@ -108,17 +108,46 @@ const ASSISTANTS = {
   evolve:   process.env.EDGE_EVOLVE_ID,
 };
 
-// Extract text from different Responses API shapes
+// Extract text from different Responses API shapes (handles v2: message → content → output_text)
 function extractText(respJson) {
   if (!respJson) return null;
+
+  // 1) Simple field (some SDKs add this)
   if (typeof respJson.output_text === 'string' && respJson.output_text.trim()) {
     return respJson.output_text;
   }
-  const out = respJson.output || [];
-  const txtItem = out.find((p) => p.type === 'output_text');
-  if (txtItem?.text) return txtItem.text;
-  const msg = respJson?.message?.content?.[0]?.text?.value; // fallback
-  return msg || null;
+
+  // 2) Iterate items in "output"
+  const out = Array.isArray(respJson.output) ? respJson.output : [];
+
+  // 2a) New common shape: items of type "message" with content array
+  for (const item of out) {
+    if (item?.type === 'message' && Array.isArray(item.content)) {
+      // Prefer explicit output_text blocks
+      const ot = item.content.find(c => c?.type === 'output_text' && typeof c.text === 'string');
+      if (ot?.text) return ot.text;
+
+      // Fallback: generic text blocks
+      const tx = item.content.find(c => c?.type === 'text' && typeof c.text === 'string');
+      if (tx?.text) return tx.text;
+
+      // Defensive: any content child with a "text" field
+      for (const c of item.content) {
+        if (typeof c?.text === 'string' && c.text.trim()) return c.text;
+      }
+    }
+
+    // 2b) Older/simple items of type "output_text"
+    if (item?.type === 'output_text' && typeof item.text === 'string' && item.text.trim()) {
+      return item.text;
+    }
+  }
+
+  // 3) Very old assistant message fallback
+  const msg = respJson?.message?.content?.[0]?.text?.value;
+  if (typeof msg === 'string' && msg.trim()) return msg;
+
+  return null;
 }
 
 async function askAssistant(assistantId, userMessage) {
@@ -130,7 +159,6 @@ async function askAssistant(assistantId, userMessage) {
     headers: {
       'Authorization': `Bearer ${OPENAI_API_KEY}`,
       'Content-Type': 'application/json',
-      // assistants v2 requirement
       'OpenAI-Beta': 'assistants=v2'
     },
     body: JSON.stringify({
