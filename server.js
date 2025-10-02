@@ -1,4 +1,4 @@
-// server.js — The Strategic Edge AI (Assistants v2 + explicit landing + robust extractor)
+// server.js — The Strategic Edge AI (Assistants v2 + explicit landing + per-assistant models)
 import 'dotenv/config';
 import express from 'express';
 import path from 'path';
@@ -19,17 +19,15 @@ app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Static assets (public & landing)
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/landing', express.static(path.join(__dirname, 'landing')));
 
-// Explicit landing route (covers edge cases where static lookup fails)
+// Explicit landing route (just in case)
 app.get('/landing/index.html', (_req, res) => {
   res.sendFile(path.join(__dirname, 'landing', 'index.html'));
 });
 
 /* ---------------------------------- Auth (demo) --------------------------------- */
-// In-memory user store (replace with DB in production)
 const users = new Map(); // email -> { email, passwordHash, plan }
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-not-for-prod';
 
@@ -54,8 +52,7 @@ app.post('/api/auth/signup', async (req, res) => {
   if (!email || !password) return res.status(400).json({ error: 'missing_fields' });
   if (users.has(email)) return res.status(400).json({ error: 'exists' });
   const passwordHash = await bcrypt.hash(password, 10);
-  const user = { email, passwordHash, plan: 'Basic' };
-  users.set(email, user);
+  users.set(email, { email, passwordHash, plan: 'Basic' });
   issueCookie(res, email);
   res.json({ ok: true });
 });
@@ -70,10 +67,7 @@ app.post('/api/auth/login', async (req, res) => {
   res.json({ ok: true });
 });
 
-app.post('/api/auth/logout', (_req, res) => {
-  res.clearCookie('tsea');
-  res.json({ ok: true });
-});
+app.post('/api/auth/logout', (_req, res) => { res.clearCookie('tsea'); res.json({ ok: true }); });
 
 app.get('/api/auth/session', (req, res) => {
   if (!req.user) return res.json({ authed: false });
@@ -89,17 +83,15 @@ app.get('/api/content/curriculum', (_req, res) => {
 app.post('/api/projects/save', (req, res) => {
   const spec = req.body?.spec || '';
   const email = req.user?.email || 'anon';
-  const out = path.join(
-    __dirname,
-    'uploads',
-    `${email.replace(/[^a-z0-9@.]/gi, '_')}-spec-${Date.now()}.txt`
-  );
+  const out = path.join(__dirname, 'uploads', `${email.replace(/[^a-z0-9@.]/gi, '_')}-spec-${Date.now()}.txt`);
   fs.writeFileSync(out, spec);
   res.json({ status: 'ok', file: out });
 });
 
 /* --------------------------------- OpenAI wiring -------------------------------- */
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const OPENAI_DEFAULT_MODEL = process.env.OPENAI_DEFAULT_MODEL || 'gpt-4o-mini';
+
 const ASSISTANTS = {
   icator:   process.env.EDGE_ICATOR_ID,
   evaluate: process.env.EDGE_EVALUATE_ID,
@@ -108,52 +100,49 @@ const ASSISTANTS = {
   evolve:   process.env.EDGE_EVOLVE_ID,
 };
 
-// Extract text from different Responses API shapes (handles v2: message → content → output_text)
+// Optional per-assistant model overrides
+const MODELS = {
+  icator:   process.env.EDGE_ICATOR_MODEL,
+  evaluate: process.env.EDGE_EVALUATE_MODEL,
+  design:   process.env.EDGE_DESIGN_MODEL,
+  generate: process.env.EDGE_GENERATE_MODEL,
+  evolve:   process.env.EDGE_EVOLVE_MODEL,
+};
+
+// Extract text from Assistants v2 "responses" shapes
 function extractText(respJson) {
   if (!respJson) return null;
+  if (typeof respJson.output_text === 'string' && respJson.output_text.trim()) return respJson.output_text;
 
-  // 1) Simple field (some SDKs add this)
-  if (typeof respJson.output_text === 'string' && respJson.output_text.trim()) {
-    return respJson.output_text;
-  }
-
-  // 2) Iterate items in "output"
   const out = Array.isArray(respJson.output) ? respJson.output : [];
-
-  // 2a) New common shape: items of type "message" with content array
   for (const item of out) {
     if (item?.type === 'message' && Array.isArray(item.content)) {
-      // Prefer explicit output_text blocks
       const ot = item.content.find(c => c?.type === 'output_text' && typeof c.text === 'string');
       if (ot?.text) return ot.text;
-
-      // Fallback: generic text blocks
       const tx = item.content.find(c => c?.type === 'text' && typeof c.text === 'string');
       if (tx?.text) return tx.text;
-
-      // Defensive: any content child with a "text" field
-      for (const c of item.content) {
-        if (typeof c?.text === 'string' && c.text.trim()) return c.text;
-      }
+      for (const c of item.content) if (typeof c?.text === 'string' && c.text.trim()) return c.text;
     }
-
-    // 2b) Older/simple items of type "output_text"
-    if (item?.type === 'output_text' && typeof item.text === 'string' && item.text.trim()) {
-      return item.text;
-    }
+    if (item?.type === 'output_text' && typeof item.text === 'string' && item.text.trim()) return item.text;
   }
-
-  // 3) Very old assistant message fallback
-  const msg = respJson?.message?.content?.[0]?.text?.value;
-  if (typeof msg === 'string' && msg.trim()) return msg;
-
-  return null;
+  const legacy = respJson?.message?.content?.[0]?.text?.value;
+  return (typeof legacy === 'string' && legacy.trim()) ? legacy : null;
 }
 
-async function askAssistant(assistantId, userMessage) {
-  if (!OPENAI_API_KEY || !assistantId) {
-    return '(dev) OpenAI not configured or assistant ID missing. ' + (userMessage || '');
-  }
+async function askAssistant(which, userMessage) {
+  const assistantId = ASSISTANTS[which];
+  const model = MODELS[which] || OPENAI_DEFAULT_MODEL;
+
+  if (!OPENAI_API_KEY) return '(dev) OPENAI_API_KEY not set.';
+  if (!assistantId && !model) return '(dev) Set OPENAI_DEFAULT_MODEL or per-assistant model.';
+
+  const body = {
+    // include a model to satisfy accounts that require it:
+    model,
+    input: userMessage || ''
+  };
+  if (assistantId) body.assistant_id = assistantId;
+
   const r = await fetch('https://api.openai.com/v1/responses', {
     method: 'POST',
     headers: {
@@ -161,16 +150,11 @@ async function askAssistant(assistantId, userMessage) {
       'Content-Type': 'application/json',
       'OpenAI-Beta': 'assistants=v2'
     },
-    body: JSON.stringify({
-      assistant_id: assistantId,
-      input: userMessage || ''
-    })
+    body: JSON.stringify(body)
   });
 
   let j;
-  try {
-    j = await r.json();
-  } catch (e) {
+  try { j = await r.json(); } catch (e) {
     console.error('OpenAI JSON parse error:', e);
     throw new Error('openai_json_error');
   }
@@ -190,10 +174,8 @@ async function askAssistant(assistantId, userMessage) {
 
 app.post('/api/chat/:assistant', async (req, res) => {
   try {
-    const { assistant } = req.params;
-    const { message } = req.body || {};
-    const id = ASSISTANTS[assistant] || ASSISTANTS.icator;
-    const reply = await askAssistant(id, message);
+    const which = req.params.assistant;
+    const reply = await askAssistant(which, req.body?.message);
     res.json({ reply });
   } catch (e) {
     console.error('Chat route error:', e?.message || e);
@@ -232,7 +214,7 @@ app.post('/api/generate', async (req, res) => {
     const prompt = `Generate a ${
       lang === 'pinescript' ? 'Pine v6' : 'NinjaScript C#'
     } strategy template for an EMA20/50 + RSI + ADX + ATR system with time filter 06:30–12:59 PT. Include inline comments and a run checklist.`;
-    const code = await askAssistant(ASSISTANTS.generate, prompt);
+    const code = await askAssistant('generate', prompt);
     res.json({ code });
   } catch (e) {
     console.error('Generate route error:', e?.message || e);
@@ -246,7 +228,7 @@ app.post('/api/evolve/upload', upload.single('file'), async (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'no_file' });
     const sample = fs.readFileSync(req.file.path, 'utf-8').split('\n').slice(0, 50).join('\n');
     const prompt = `Analyze this backtest sample (first 50 lines). Report PF, Win%, Max DD, Avg Trade, MAE/MFE; then prescribe ranked next experiments.\n\n${sample}`;
-    const analysis = await askAssistant(ASSISTANTS.evolve, prompt);
+    const analysis = await askAssistant('evolve', prompt);
     res.json({ analysis });
   } catch (e) {
     console.error('Evolve route error:', e?.message || e);
@@ -266,7 +248,7 @@ try {
 app.post('/api/billing/checkout', async (req, res) => {
   const tier = req.body?.tier;
   if (!stripe) {
-    if (req.user) req.user.plan = tier === 'pro' ? 'Pro' : 'Elite'; // simulate upgrade in dev
+    if (req.user) req.user.plan = tier === 'pro' ? 'Pro' : 'Elite'; // simulate in dev
     return res.json({ url: null, simulated: true });
   }
   const price = tier === 'pro' ? process.env.PRICE_PRO : process.env.PRICE_ELITE;
