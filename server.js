@@ -1,4 +1,4 @@
-// server.js — The Strategic Edge AI (Updated with explicit landing route)
+// server.js — The Strategic Edge AI (Assistants v2 + explicit landing)
 import 'dotenv/config';
 import express from 'express';
 import path from 'path';
@@ -13,7 +13,7 @@ const app = express();
 const __dirname = path.resolve();
 const PORT = process.env.PORT || 3000;
 
-/* ------------------------- Core middleware & statics ------------------------ */
+/* -------------------------- Core middleware & statics -------------------------- */
 app.use(cors());
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
@@ -23,13 +23,13 @@ app.use(cookieParser());
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/landing', express.static(path.join(__dirname, 'landing')));
 
-// Explicit landing route (fixes "Cannot GET /landing/index.html")
+// Explicit landing route (covers edge cases where static lookup fails)
 app.get('/landing/index.html', (_req, res) => {
   res.sendFile(path.join(__dirname, 'landing', 'index.html'));
 });
 
-/* --------------------------------- Auth (demo) ------------------------------ */
-// In-memory user store for demo (swap for a real DB in production)
+/* ---------------------------------- Auth (demo) --------------------------------- */
+// In-memory user store (replace with DB in production)
 const users = new Map(); // email -> { email, passwordHash, plan }
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-not-for-prod';
 
@@ -53,7 +53,6 @@ app.post('/api/auth/signup', async (req, res) => {
   const { email, password } = req.body || {};
   if (!email || !password) return res.status(400).json({ error: 'missing_fields' });
   if (users.has(email)) return res.status(400).json({ error: 'exists' });
-
   const passwordHash = await bcrypt.hash(password, 10);
   const user = { email, passwordHash, plan: 'Basic' };
   users.set(email, user);
@@ -65,15 +64,13 @@ app.post('/api/auth/login', async (req, res) => {
   const { email, password } = req.body || {};
   const user = users.get(email);
   if (!user) return res.status(400).json({ error: 'no_user' });
-
   const ok = await bcrypt.compare(password, user.passwordHash);
   if (!ok) return res.status(401).json({ error: 'bad_creds' });
-
   issueCookie(res, email);
   res.json({ ok: true });
 });
 
-app.post('/api/auth/logout', (req, res) => {
+app.post('/api/auth/logout', (_req, res) => {
   res.clearCookie('tsea');
   res.json({ ok: true });
 });
@@ -84,7 +81,7 @@ app.get('/api/auth/session', (req, res) => {
   res.json({ authed: true, user: { email, plan } });
 });
 
-/* --------------------------- Content & simple save -------------------------- */
+/* ------------------------------- Content + saves ------------------------------- */
 app.get('/api/content/curriculum', (_req, res) => {
   res.sendFile(path.join(__dirname, 'content', 'curriculum.json'));
 });
@@ -101,15 +98,28 @@ app.post('/api/projects/save', (req, res) => {
   res.json({ status: 'ok', file: out });
 });
 
-/* ------------------------------- OpenAI wiring ------------------------------ */
+/* --------------------------------- OpenAI wiring -------------------------------- */
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const ASSISTANTS = {
-  icator: process.env.EDGE_ICATOR_ID,
+  icator:   process.env.EDGE_ICATOR_ID,
   evaluate: process.env.EDGE_EVALUATE_ID,
-  design: process.env.EDGE_DESIGN_ID,
+  design:   process.env.EDGE_DESIGN_ID,
   generate: process.env.EDGE_GENERATE_ID,
-  evolve: process.env.EDGE_EVOLVE_ID
+  evolve:   process.env.EDGE_EVOLVE_ID,
 };
+
+// Extract text from different Responses API shapes
+function extractText(respJson) {
+  if (!respJson) return null;
+  if (typeof respJson.output_text === 'string' && respJson.output_text.trim()) {
+    return respJson.output_text;
+  }
+  const out = respJson.output || [];
+  const txtItem = out.find((p) => p.type === 'output_text');
+  if (txtItem?.text) return txtItem.text;
+  const msg = respJson?.message?.content?.[0]?.text?.value; // fallback
+  return msg || null;
+}
 
 async function askAssistant(assistantId, userMessage) {
   if (!OPENAI_API_KEY || !assistantId) {
@@ -118,33 +128,52 @@ async function askAssistant(assistantId, userMessage) {
   const r = await fetch('https://api.openai.com/v1/responses', {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${OPENAI_API_KEY}`,
-      'Content-Type': 'application/json'
+      'Authorization': `Bearer ${OPENAI_API_KEY}`,
+      'Content-Type': 'application/json',
+      // assistants v2 requirement
+      'OpenAI-Beta': 'assistants=v2'
     },
     body: JSON.stringify({
       assistant_id: assistantId,
       input: userMessage || ''
     })
   });
-  const j = await r.json();
-  if (j.error) throw new Error(j.error.message || 'OpenAI error');
-  const out = j.output || [];
-  const firstText = out.find((p) => p.type === 'output_text');
-  return firstText?.text || '(no content)';
+
+  let j;
+  try {
+    j = await r.json();
+  } catch (e) {
+    console.error('OpenAI JSON parse error:', e);
+    throw new Error('openai_json_error');
+  }
+
+  if (!r.ok || j.error) {
+    console.error('OpenAI error:', { status: r.status, error: j.error, body: j });
+    throw new Error(j?.error?.message || `openai_http_${r.status}`);
+  }
+
+  const text = extractText(j);
+  if (!text) {
+    console.warn('OpenAI empty text payload:', j);
+    return '(no content)';
+  }
+  return text;
 }
 
 app.post('/api/chat/:assistant', async (req, res) => {
   try {
-    const id = ASSISTANTS[req.params.assistant] || ASSISTANTS.icator;
-    const reply = await askAssistant(id, req.body?.message);
+    const { assistant } = req.params;
+    const { message } = req.body || {};
+    const id = ASSISTANTS[assistant] || ASSISTANTS.icator;
+    const reply = await askAssistant(id, message);
     res.json({ reply });
   } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: 'chat_failed' });
+    console.error('Chat route error:', e?.message || e);
+    res.status(500).json({ error: 'chat_failed', detail: String(e?.message || e) });
   }
 });
 
-/* --------------------------- Design / Generate / Evolve --------------------- */
+/* --------------------------- Design / Generate / Evolve --------------------------- */
 app.post('/api/design/draft', (req, res) => {
   const { instrument, timeframe, session, indicators, rules } = req.body || {};
   const spec = `# Design Spec
@@ -178,7 +207,7 @@ app.post('/api/generate', async (req, res) => {
     const code = await askAssistant(ASSISTANTS.generate, prompt);
     res.json({ code });
   } catch (e) {
-    console.error(e);
+    console.error('Generate route error:', e?.message || e);
     res.status(500).json({ error: 'generate_failed' });
   }
 });
@@ -192,12 +221,12 @@ app.post('/api/evolve/upload', upload.single('file'), async (req, res) => {
     const analysis = await askAssistant(ASSISTANTS.evolve, prompt);
     res.json({ analysis });
   } catch (e) {
-    console.error(e);
+    console.error('Evolve route error:', e?.message || e);
     res.status(500).json({ error: 'evolve_failed' });
   }
 });
 
-/* ---------------------------------- Billing -------------------------------- */
+/* ----------------------------------- Billing ----------------------------------- */
 let stripe = null;
 try {
   if (process.env.STRIPE_KEY) {
@@ -209,7 +238,7 @@ try {
 app.post('/api/billing/checkout', async (req, res) => {
   const tier = req.body?.tier;
   if (!stripe) {
-    if (req.user) req.user.plan = tier === 'pro' ? 'Pro' : 'Elite'; // simulate in dev
+    if (req.user) req.user.plan = tier === 'pro' ? 'Pro' : 'Elite'; // simulate upgrade in dev
     return res.json({ url: null, simulated: true });
   }
   const price = tier === 'pro' ? process.env.PRICE_PRO : process.env.PRICE_ELITE;
@@ -232,11 +261,9 @@ app.post('/api/billing/portal', async (req, res) => {
   res.json({ url: portal.url });
 });
 
-/* --------------------------------- Routing --------------------------------- */
+/* ----------------------------------- Routing ----------------------------------- */
 app.get('/', (_req, res) => res.redirect('/landing/index.html'));
-app.get('/app', (_req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
+app.get('/app', (_req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
-/* --------------------------------- Start ----------------------------------- */
+/* ------------------------------------ Start ------------------------------------ */
 app.listen(PORT, () => console.log(`[TSEA] Full app running on http://localhost:${PORT}`));
