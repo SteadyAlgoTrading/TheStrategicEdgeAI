@@ -1,0 +1,18 @@
+{
+  "beginner": [
+    {
+      "id": "b1",
+      "title": "What is a Trend?"
+    },
+    {
+      "id": "b2",
+      "title": "Moving Averages 101"
+    }
+  ],
+  "full": [
+    {
+      "id": "p1",
+      "title": "ADX & Momentum Filters"
+    }
+  ]
+}
