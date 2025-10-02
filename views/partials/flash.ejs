@@ -1,0 +1,5 @@
+<% if (flash && flash.length) { %>
+  <% flash.forEach(m => { %>
+    <div class="alert <%= m.type || '' %>"><%= m.text %></div>
+  <% }) %>
+<% } %>
