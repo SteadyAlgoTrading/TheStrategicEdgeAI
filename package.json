@@ -1,0 +1,16 @@
+{
+  "name": "tsea-webapp",
+  "version": "1.0.0",
+  "description": "The Strategic Edge AI webapp (landing + static)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "NODE_ENV=development node server.js"
+  },
+  "dependencies": {
+    "compression": "^1.7.4",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^7.1.0"
+  }
+}
