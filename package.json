@@ -1,0 +1,26 @@
+{
+  "name": "tsea-app",
+  "version": "1.2.2",
+  "description": "The Strategic Edge AI web app with restored dashboard/learning/projects and open-chat Assistants.",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18.x"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-ejs-layouts": "^2.5.1",
+    "express-fileupload": "^1.5.1",
+    "express-session": "^1.17.3",
+    "helmet": "^7.1.0",
+    "morgan": "^1.10.0",
+    "nanoid": "^5.0.7",
+    "openai": "^4.52.0"
+  }
+}

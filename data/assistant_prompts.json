@@ -1,0 +1,22 @@
+{
+  "evaluate": [
+    "What's the current market regime for ES on 1m vs 5m?",
+    "Explain trend vs range in plain English.",
+    "How should I size stops with volatility?"
+  ],
+  "design": [
+    "Draft NQ 1m rules with 20/50 EMA + ATR stops.",
+    "What ADX threshold reduces chop on 1\u20133m?",
+    "Add session 06:30\u201312:59 PT and justify."
+  ],
+  "generate": [
+    "Show 'locked parameters' for NinjaTrader.",
+    "Create an adjustable RSI filter for TradingView.",
+    "Pros/cons of cloud-only artifacts?"
+  ],
+  "evolve": [
+    "PF 1.3, WR 46%\u2014where\u2019s the leak?",
+    "Tighten ATR stop or widen RR?",
+    "Propose a revision for 10:30\u201312:00 underperformance."
+  ]
+}
