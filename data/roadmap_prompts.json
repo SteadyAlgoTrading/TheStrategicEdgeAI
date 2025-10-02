@@ -1,6 +1,0 @@
-{
-  "evaluate": "Analyze current market conditions for your chosen symbol/timeframe.",
-  "design": "Translate insights into a testable ruleset with clear entry/exit & risk.",
-  "generate": "Convert the spec into cloud-hosted artifacts for NinjaTrader or TradingView.",
-  "evolve": "Upload backtests, get diagnostics, and iterate your spec."
-}
