@@ -1,0 +1,228 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "updated": "2025-10-01"
+  },
+  "tiers": [
+    "Beginner",
+    "Intermediate",
+    "Advanced"
+  ],
+  "phases": [
+    "Evaluate",
+    "Design",
+    "Generate",
+    "Evolve"
+  ],
+  "lessons": [
+    {
+      "lesson_id": "EVA-1.1-market-basics",
+      "title": "Market Foundations & How Price Moves",
+      "tier": "Beginner",
+      "phase": "Evaluate",
+      "duration_min": 12,
+      "outcomes": [
+        "Explain bid/ask/spread and slippage",
+        "Describe volatility using ATR"
+      ],
+      "topics": [
+        "Bid/Ask",
+        "Spread",
+        "ATR basics"
+      ],
+      "platform_focus": [
+        "NinjaTrader",
+        "TradingView"
+      ],
+      "markets": [
+        "ES",
+        "NQ",
+        "CL"
+      ],
+      "assets": [],
+      "assessment": {
+        "type": "quiz",
+        "pass_pct": 80
+      }
+    },
+    {
+      "lesson_id": "EVA-1.2-trend-vs-range",
+      "title": "Trend vs Range with EMAs & ADX",
+      "tier": "Beginner",
+      "phase": "Evaluate",
+      "duration_min": 15,
+      "outcomes": [
+        "Identify trend vs range using EMA20/50 and ADX",
+        "Tag sessions by regime"
+      ],
+      "topics": [
+        "EMA20/50",
+        "ADX"
+      ],
+      "platform_focus": [
+        "NinjaTrader",
+        "TradingView"
+      ],
+      "markets": [
+        "ES",
+        "NQ"
+      ],
+      "assets": [],
+      "assessment": {
+        "type": "quiz",
+        "pass_pct": 80
+      }
+    },
+    {
+      "lesson_id": "DES-2.1-rules-grammar",
+      "title": "Turning Ideas into Rules: Entries, Exits, Filters",
+      "tier": "Beginner",
+      "phase": "Design",
+      "duration_min": 16,
+      "outcomes": [
+        "Write entry/exit logic",
+        "Add time-of-day filters and ADX gates"
+      ],
+      "topics": [
+        "Entries/Exits",
+        "Time Filters",
+        "ADX Gates"
+      ],
+      "platform_focus": [
+        "NinjaTrader",
+        "TradingView"
+      ],
+      "markets": [
+        "ES",
+        "NQ",
+        "CL"
+      ],
+      "assets": [],
+      "assessment": {
+        "type": "scenario",
+        "pass_pct": 0
+      }
+    },
+    {
+      "lesson_id": "DES-2.2-atr-risk-rr",
+      "title": "ATR-Based Risk: 0.6\u00d7 Stops & 3R Targets",
+      "tier": "Intermediate",
+      "phase": "Design",
+      "duration_min": 14,
+      "outcomes": [
+        "Calculate ATR stops on 1-min",
+        "Set 3R targets and understand expectancy"
+      ],
+      "topics": [
+        "ATR(14)",
+        "RR=3",
+        "Expectancy"
+      ],
+      "platform_focus": [
+        "NinjaTrader",
+        "TradingView"
+      ],
+      "markets": [
+        "ES",
+        "NQ"
+      ],
+      "assets": [],
+      "assessment": {
+        "type": "quiz",
+        "pass_pct": 80
+      }
+    },
+    {
+      "lesson_id": "GEN-3.1-code-scaffolds",
+      "title": "From Rules to Code: Pine v6 & NinjaScript Templates",
+      "tier": "Intermediate",
+      "phase": "Generate",
+      "duration_min": 18,
+      "outcomes": [
+        "Map rules to code constructs",
+        "Use compile/run checklists"
+      ],
+      "topics": [
+        "Pine v6",
+        "NinjaScript",
+        "Compile/Run"
+      ],
+      "platform_focus": [
+        "NinjaTrader",
+        "TradingView"
+      ],
+      "markets": [
+        "ES",
+        "NQ",
+        "CL"
+      ],
+      "assets": [],
+      "assessment": {
+        "type": "lab",
+        "pass_pct": 0
+      }
+    },
+    {
+      "lesson_id": "EVO-4.1-backtest-diagnostics",
+      "title": "Backtest Diagnostics: PF, Win%, DD, MAE/MFE",
+      "tier": "Intermediate",
+      "phase": "Evolve",
+      "duration_min": 17,
+      "outcomes": [
+        "Compute and interpret PF/Win%/DD",
+        "Use MAE/MFE to tune stops and targets"
+      ],
+      "topics": [
+        "PF",
+        "Win%",
+        "DD",
+        "MAE/MFE"
+      ],
+      "platform_focus": [
+        "NinjaTrader",
+        "TradingView"
+      ],
+      "markets": [
+        "ES",
+        "NQ",
+        "CL"
+      ],
+      "assets": [],
+      "assessment": {
+        "type": "quiz",
+        "pass_pct": 80
+      }
+    },
+    {
+      "lesson_id": "ADV-5.1-adaptive-regimes",
+      "title": "Adaptive Strategies Across Regimes",
+      "tier": "Advanced",
+      "phase": "Evolve",
+      "duration_min": 20,
+      "outcomes": [
+        "Design regime-aware parameter gates",
+        "Build an iteration plan and avoid overfitting"
+      ],
+      "topics": [
+        "Regimes",
+        "Walk-Forward",
+        "Brittleness"
+      ],
+      "platform_focus": [
+        "NinjaTrader",
+        "TradingView"
+      ],
+      "markets": [
+        "ES",
+        "NQ",
+        "CL",
+        "FX"
+      ],
+      "assets": [],
+      "assessment": {
+        "type": "scenario",
+        "pass_pct": 0
+      }
+    }
+  ]
+}
