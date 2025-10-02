@@ -1,0 +1,35 @@
+<h2><%= project.name %></h2>
+<p class="small">Template: <%= project.template || 'Custom' %> • Status: <span class="tag"><%= project.status %></span></p>
+
+<div class="grid cols-2">
+  <div class="card">
+    <h3>Overview</h3>
+    <p>Goal: <%= project.goal %></p>
+    <p>Markets: <%= project.markets %> | Timeframe: <%= project.timeframe %></p>
+    <p>Risk: <%= project.riskPrefs %></p>
+  </div>
+  <div class="card">
+    <h3>Roadmap</h3>
+    <ol>
+      <li>Evaluate → <a href="/assistants/evaluate?project=<%= project.id %>">Analyze</a></li>
+      <li>Design → <a href="/assistants/design?project=<%= project.id %>">Ruleset</a></li>
+      <li>Generate → <a href="/assistants/generate?project=<%= project.id %>">Artifacts</a></li>
+      <li class="<%= user.tier==='Elite'?'':'lock' %>">Evolve → <a href="/assistants/evolve?project=<%= project.id %>">Backtests</a></li>
+    </ol>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Artifacts & Versions</h3>
+  <% if (!project.versions?.length) { %>
+    <p class="small">No versions yet. Use Design → Generate to create your first spec and artifact.</p>
+  <% } else { %>
+    <ul>
+      <% project.versions.forEach(v => { %>
+        <li><strong><%= v.name %></strong> — <%= new Date(v.date).toLocaleString() %><br/>
+          <div class="code"><%= v.spec %></div>
+        </li>
+      <% }) %>
+    </ul>
+  <% } %>
+</div>

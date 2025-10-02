@@ -1,0 +1,20 @@
+<h2>Sign In</h2>
+<p class="small">Passwordless demo login. Choose your tier to preview gated UX.</p>
+<form method="post" action="/login">
+  <div class="row">
+    <div style="flex:1">
+      <label>Name</label>
+      <input class="input" name="name" placeholder="Your name" required/>
+    </div>
+    <div style="flex:1">
+      <label>Tier</label>
+      <select class="input" name="tier">
+        <option>Basic</option>
+        <option>Pro</option>
+        <option>Elite</option>
+      </select>
+    </div>
+  </div>
+  <p><label><input type="checkbox" name="firstTime" checked/> First-time setup (Guided Intake)</label></p>
+  <button class="btn gold">Continue</button>
+</form>
