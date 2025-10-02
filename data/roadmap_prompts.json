@@ -1,0 +1,6 @@
+{
+  "evaluate": "Analyze market conditions for chosen symbol/timeframe.",
+  "design": "Translate insights into a testable ruleset.",
+  "generate": "Convert the spec into cloud-hosted artifacts.",
+  "evolve": "Upload backtests, get diagnostics, iterate."
+}
