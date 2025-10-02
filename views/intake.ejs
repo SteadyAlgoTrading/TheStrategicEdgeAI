@@ -1,0 +1,46 @@
+<% layout('layout',{title:'Guided Intake'}) %>
+<h2>Guided Intake</h2>
+<p class="small">3–5 minutes to personalize your experience.</p>
+<form method="post" action="/intake">
+  <div class="grid cols-2">
+    <div class="card">
+      <h3>Experience Level</h3>
+      <select class="input" name="experience">
+        <option>Beginner</option>
+        <option>Intermediate</option>
+        <option>Advanced</option>
+      </select>
+    </div>
+    <div class="card">
+      <h3>Primary Platforms</h3>
+      <label><input type="checkbox" name="platforms" value="NinjaTrader" checked/> NinjaTrader</label><br/>
+      <label><input type="checkbox" name="platforms" value="TradingView" /> TradingView</label>
+    </div>
+    <div class="card">
+      <h3>Objective Today</h3>
+      <select class="input" name="objective">
+        <option>Learn basics</option>
+        <option>Design strategy</option>
+        <option>Generate code</option>
+        <option>Analyze backtests</option>
+      </select>
+    </div>
+    <div class="card">
+      <h3>Risk / Time Prefs</h3>
+      <label>Style</label>
+      <select class="input" name="style">
+        <option>Scalping</option>
+        <option>Swing</option>
+      </select>
+      <label>Bar timeframe</label>
+      <select class="input" name="bars">
+        <option>1–3 min</option>
+        <option>5–15 min</option>
+      </select>
+      <label>Markets</label>
+      <input class="input" name="markets" placeholder="ES, NQ, CL"/>
+    </div>
+  </div>
+  <p class="notice small">Outcome: seeds your Adaptive EDGE Roadmap and a starter Project.</p>
+  <button class="btn gold">Finish</button>
+</form>

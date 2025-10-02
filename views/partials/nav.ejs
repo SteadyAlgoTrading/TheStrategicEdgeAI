@@ -1,0 +1,22 @@
+<nav class="nav">
+  <div class="brand">
+    <img src="/logo.svg" alt="TSEA Logo" width="130" height="32"/>
+    <span class="badge">Tier: <%= user?.tier || "Guest" %></span>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center">
+    <% if (user) { %>
+      <a href="/dashboard" class="btn">Dashboard</a>
+      <a href="/projects" class="btn ghost">Projects</a>
+      <a href="/assistants/evaluate" class="btn ghost">Assistants</a>
+      <a href="/learning" class="btn ghost">Learning</a>
+      <a href="/uploads" class="btn ghost">Uploads</a>
+      <a href="/account" class="btn ghost">Account</a>
+      <a href="/support" class="btn ghost">Support</a>
+      <form method="post" action="/logout" style="display:inline">
+        <button class="btn" style="margin-left:10px">Logout</button>
+      </form>
+    <% } else { %>
+      <a href="/login" class="btn gold">Sign In</a>
+    <% } %>
+  </div>
+</nav>

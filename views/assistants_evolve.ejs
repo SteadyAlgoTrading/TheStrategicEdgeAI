@@ -1,0 +1,32 @@
+<% layout('layout',{title:'Evolve'}) %>
+<h2>Evolve</h2>
+<p class="small">Upload backtests, view diagnostics, and iterate your design. (Elite only)</p>
+<form method="post" action="/uploads" enctype="multipart/form-data">
+  <div class="row">
+    <input type="file" name="file" class="input" required/>
+    <button class="btn">Upload</button>
+  </div>
+</form>
+
+<div class="grid cols-2">
+  <div class="card">
+    <h3>Performance Summary (mock)</h3>
+    <div class="kpis">
+      <div class="kpi">Profit Factor: <strong>1.42</strong></div>
+      <div class="kpi">Win Rate: <strong>48%</strong></div>
+      <div class="kpi">Max DD: <strong>-7.8%</strong></div>
+      <div class="kpi">Avg Trade: <strong>$18.40</strong></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Diagnostics & Hints</h3>
+    <ul>
+      <li>Time-of-day: Better 07:10–10:45 PT</li>
+      <li>Volatility: Consider ATR stop 0.5–0.7</li>
+      <li>Momentum: ADX > 22 improves selectivity</li>
+    </ul>
+    <form method="post" action="/assistants/evolve/propose-revision">
+      <button class="btn gold">Propose a Design Revision</button>
+    </form>
+  </div>
+</div>

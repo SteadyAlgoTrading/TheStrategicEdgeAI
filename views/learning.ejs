@@ -1,0 +1,26 @@
+<% layout('layout',{title:'Learning'}) %>
+<h2>Mastery Series</h2>
+<p class="small">
+  Basic: Beginner Module only. Pro/Elite: Full access.
+</p>
+<div class="grid cols-2">
+  <div class="card">
+    <h3>Beginner Module</h3>
+    <ul>
+      <% lessons.beginner.forEach(l=>{ %>
+        <li><%= l.title %></li>
+      <% }) %>
+    </ul>
+  </div>
+  <div class="card <%= (user.tier==='Basic')?'lock':'' %>">
+    <h3>Advanced Library</h3>
+    <ul>
+      <% lessons.full.forEach(l=>{ %>
+        <li><%= l.title %></li>
+      <% }) %>
+    </ul>
+    <% if (user.tier==='Basic') { %>
+      <p class="small">Upgrade to unlock.</p>
+    <% } %>
+  </div>
+</div>
