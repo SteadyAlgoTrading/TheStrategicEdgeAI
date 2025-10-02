@@ -1,4 +1,4 @@
-// server.js — The Strategic Edge AI (Assistants v2 + explicit landing + per-assistant models)
+// server.js — The Strategic Edge AI (Chat Completions fallback; stable + fast)
 import 'dotenv/config';
 import express from 'express';
 import path from 'path';
@@ -88,20 +88,12 @@ app.post('/api/projects/save', (req, res) => {
   res.json({ status: 'ok', file: out });
 });
 
-/* --------------------------------- OpenAI wiring -------------------------------- */
+/* ------------------------------ OpenAI (Completions) --------------------------- */
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-const OPENAI_DEFAULT_MODEL = process.env.OPENAI_DEFAULT_MODEL || 'gpt-4o-mini';
+const DEFAULT_MODEL = process.env.OPENAI_DEFAULT_MODEL || 'gpt-4o-mini';
 
-const ASSISTANTS = {
-  icator:   process.env.EDGE_ICATOR_ID,
-  evaluate: process.env.EDGE_EVALUATE_ID,
-  design:   process.env.EDGE_DESIGN_ID,
-  generate: process.env.EDGE_GENERATE_ID,
-  evolve:   process.env.EDGE_EVOLVE_ID,
-};
-
-// Optional per-assistant model overrides
-const MODELS = {
+// Optional per-assistant model overrides (set these in Render if you want)
+const MODEL_FOR = {
   icator:   process.env.EDGE_ICATOR_MODEL,
   evaluate: process.env.EDGE_EVALUATE_MODEL,
   design:   process.env.EDGE_DESIGN_MODEL,
@@ -109,46 +101,32 @@ const MODELS = {
   evolve:   process.env.EDGE_EVOLVE_MODEL,
 };
 
-// Extract text from Assistants v2 "responses" shapes
-function extractText(respJson) {
-  if (!respJson) return null;
-  if (typeof respJson.output_text === 'string' && respJson.output_text.trim()) return respJson.output_text;
+// System prompts per assistant (tight scopes)
+const SYSTEM_FOR = {
+  icator: `You are EDGE-icator: a helpful guide for the Strategic Edge AI platform. Answer FAQs about plans, features, and where to do things. No trading advice.`,
+  evaluate: `You are EDGE-Evaluate: explain market regimes, indicator basics (EMA/RSI/ADX/ATR), feasibility; strictly no code.`,
+  design: `You are EDGE-Design: convert user goals into clear rules (entries, exits, filters, ATR risk, time windows). No code.`,
+  generate: `You are EDGE-Generate: produce clean, commented code templates (NinjaScript C# or Pine v6) from the spec.`,
+  evolve: `You are EDGE-Evolve: analyze backtest stats (PF, Win%, DD, MAE/MFE) and prescribe ranked improvements; no investment advice.`
+};
 
-  const out = Array.isArray(respJson.output) ? respJson.output : [];
-  for (const item of out) {
-    if (item?.type === 'message' && Array.isArray(item.content)) {
-      const ot = item.content.find(c => c?.type === 'output_text' && typeof c.text === 'string');
-      if (ot?.text) return ot.text;
-      const tx = item.content.find(c => c?.type === 'text' && typeof c.text === 'string');
-      if (tx?.text) return tx.text;
-      for (const c of item.content) if (typeof c?.text === 'string' && c.text.trim()) return c.text;
-    }
-    if (item?.type === 'output_text' && typeof item.text === 'string' && item.text.trim()) return item.text;
-  }
-  const legacy = respJson?.message?.content?.[0]?.text?.value;
-  return (typeof legacy === 'string' && legacy.trim()) ? legacy : null;
-}
-
-async function askAssistant(which, userMessage) {
-  const assistantId = ASSISTANTS[which];
-  const model = MODELS[which] || OPENAI_DEFAULT_MODEL;
-
+async function chatComplete(which, userMessage) {
   if (!OPENAI_API_KEY) return '(dev) OPENAI_API_KEY not set.';
-  if (!assistantId && !model) return '(dev) Set OPENAI_DEFAULT_MODEL or per-assistant model.';
+  const model = MODEL_FOR[which] || DEFAULT_MODEL;
 
   const body = {
-    // include a model to satisfy accounts that require it:
     model,
-    input: userMessage || ''
+    messages: [
+      { role: 'system', content: SYSTEM_FOR[which] || 'You are a helpful assistant.' },
+      { role: 'user', content: String(userMessage || '') }
+    ]
   };
-  if (assistantId) body.assistant_id = assistantId;
 
-  const r = await fetch('https://api.openai.com/v1/responses', {
+  const r = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${OPENAI_API_KEY}`,
-      'Content-Type': 'application/json',
-      'OpenAI-Beta': 'assistants=v2'
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify(body)
   });
@@ -164,18 +142,14 @@ async function askAssistant(which, userMessage) {
     throw new Error(j?.error?.message || `openai_http_${r.status}`);
   }
 
-  const text = extractText(j);
-  if (!text) {
-    console.warn('OpenAI empty text payload:', j);
-    return '(no content)';
-  }
-  return text;
+  const text = j?.choices?.[0]?.message?.content;
+  return text || '(no content)';
 }
 
 app.post('/api/chat/:assistant', async (req, res) => {
   try {
-    const which = req.params.assistant;
-    const reply = await askAssistant(which, req.body?.message);
+    const which = req.params.assistant; // icator|evaluate|design|generate|evolve
+    const reply = await chatComplete(which, req.body?.message);
     res.json({ reply });
   } catch (e) {
     console.error('Chat route error:', e?.message || e);
@@ -211,10 +185,8 @@ Notes: Educational use only.`;
 app.post('/api/generate', async (req, res) => {
   try {
     const lang = req.body?.lang || 'pinescript';
-    const prompt = `Generate a ${
-      lang === 'pinescript' ? 'Pine v6' : 'NinjaScript C#'
-    } strategy template for an EMA20/50 + RSI + ADX + ATR system with time filter 06:30–12:59 PT. Include inline comments and a run checklist.`;
-    const code = await askAssistant('generate', prompt);
+    const prompt = `Generate a ${lang === 'pinescript' ? 'Pine v6' : 'NinjaScript C#'} strategy template for an EMA20/50 + RSI + ADX + ATR system with time filter 06:30–12:59 PT. Include inline comments and a run checklist.`;
+    const code = await chatComplete('generate', prompt);
     res.json({ code });
   } catch (e) {
     console.error('Generate route error:', e?.message || e);
@@ -228,7 +200,7 @@ app.post('/api/evolve/upload', upload.single('file'), async (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'no_file' });
     const sample = fs.readFileSync(req.file.path, 'utf-8').split('\n').slice(0, 50).join('\n');
     const prompt = `Analyze this backtest sample (first 50 lines). Report PF, Win%, Max DD, Avg Trade, MAE/MFE; then prescribe ranked next experiments.\n\n${sample}`;
-    const analysis = await askAssistant('evolve', prompt);
+    const analysis = await chatComplete('evolve', prompt);
     res.json({ analysis });
   } catch (e) {
     console.error('Evolve route error:', e?.message || e);
@@ -248,7 +220,7 @@ try {
 app.post('/api/billing/checkout', async (req, res) => {
   const tier = req.body?.tier;
   if (!stripe) {
-    if (req.user) req.user.plan = tier === 'pro' ? 'Pro' : 'Elite'; // simulate in dev
+    if (req.user) req.user.plan = tier === 'pro' ? 'Pro' : 'Elite'; // simulate upgrade in dev
     return res.json({ url: null, simulated: true });
   }
   const price = tier === 'pro' ? process.env.PRICE_PRO : process.env.PRICE_ELITE;
