@@ -1,0 +1,828 @@
+{
+  "tracks": [
+    {
+      "id": "beginner",
+      "name": "Beginner",
+      "range": [
+        1,
+        5
+      ],
+      "tier": "Basic"
+    },
+    {
+      "id": "intermediate",
+      "name": "Intermediate",
+      "range": [
+        6,
+        10
+      ],
+      "tier": "Pro"
+    },
+    {
+      "id": "advanced",
+      "name": "Advanced",
+      "range": [
+        11,
+        15
+      ],
+      "tier": "Elite"
+    }
+  ],
+  "modules": [
+    {
+      "id": "m01",
+      "num": 1,
+      "title": "Market Regimes 101 (Trend, Range, Transition)",
+      "track": "beginner",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Concepts",
+          "content_md": "## Market Regimes 101 (Trend, Range, Transition)\\n\\nWhy it matters, core ideas, pitfalls."
+        },
+        {
+          "id": "l2",
+          "title": "Examples",
+          "content_md": "Add annotated charts/snips."
+        },
+        {
+          "id": "l3",
+          "title": "Apply It",
+          "content_md": "Draft a small rule and rationale."
+        }
+      ],
+      "quiz": {
+        "questions": [
+          {
+            "id": "q1",
+            "type": "mc",
+            "prompt": "Which practice aligns best?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 1,
+            "explain": "Guardrails matter."
+          },
+          {
+            "id": "q2",
+            "type": "mc",
+            "prompt": "Which is a pitfall?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 2,
+            "explain": "Avoid overfitting/time drift."
+          }
+        ]
+      }
+    },
+    {
+      "id": "m02",
+      "num": 2,
+      "title": "Moving Averages (EMA/VWMA) \u2014 Bias & Timing",
+      "track": "beginner",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Concepts",
+          "content_md": "## Moving Averages (EMA/VWMA) \u2014 Bias & Timing\\n\\nWhy it matters, core ideas, pitfalls."
+        },
+        {
+          "id": "l2",
+          "title": "Examples",
+          "content_md": "Add annotated charts/snips."
+        },
+        {
+          "id": "l3",
+          "title": "Apply It",
+          "content_md": "Draft a small rule and rationale."
+        }
+      ],
+      "quiz": {
+        "questions": [
+          {
+            "id": "q1",
+            "type": "mc",
+            "prompt": "Which practice aligns best?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 1,
+            "explain": "Guardrails matter."
+          },
+          {
+            "id": "q2",
+            "type": "mc",
+            "prompt": "Which is a pitfall?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 2,
+            "explain": "Avoid overfitting/time drift."
+          }
+        ]
+      }
+    },
+    {
+      "id": "m03",
+      "num": 3,
+      "title": "Volatility Basics (ATR) & Risk per Trade",
+      "track": "beginner",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Concepts",
+          "content_md": "## Volatility Basics (ATR) & Risk per Trade\\n\\nWhy it matters, core ideas, pitfalls."
+        },
+        {
+          "id": "l2",
+          "title": "Examples",
+          "content_md": "Add annotated charts/snips."
+        },
+        {
+          "id": "l3",
+          "title": "Apply It",
+          "content_md": "Draft a small rule and rationale."
+        }
+      ],
+      "quiz": {
+        "questions": [
+          {
+            "id": "q1",
+            "type": "mc",
+            "prompt": "Which practice aligns best?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 1,
+            "explain": "Guardrails matter."
+          },
+          {
+            "id": "q2",
+            "type": "mc",
+            "prompt": "Which is a pitfall?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 2,
+            "explain": "Avoid overfitting/time drift."
+          }
+        ]
+      }
+    },
+    {
+      "id": "m04",
+      "num": 4,
+      "title": "RSI & ADX \u2014 Momentum & Selectivity",
+      "track": "beginner",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Concepts",
+          "content_md": "## RSI & ADX \u2014 Momentum & Selectivity\\n\\nWhy it matters, core ideas, pitfalls."
+        },
+        {
+          "id": "l2",
+          "title": "Examples",
+          "content_md": "Add annotated charts/snips."
+        },
+        {
+          "id": "l3",
+          "title": "Apply It",
+          "content_md": "Draft a small rule and rationale."
+        }
+      ],
+      "quiz": {
+        "questions": [
+          {
+            "id": "q1",
+            "type": "mc",
+            "prompt": "Which practice aligns best?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 1,
+            "explain": "Guardrails matter."
+          },
+          {
+            "id": "q2",
+            "type": "mc",
+            "prompt": "Which is a pitfall?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 2,
+            "explain": "Avoid overfitting/time drift."
+          }
+        ]
+      }
+    },
+    {
+      "id": "m05",
+      "num": 5,
+      "title": "Session Windows & Time-of-Day Effects",
+      "track": "beginner",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Concepts",
+          "content_md": "## Session Windows & Time-of-Day Effects\\n\\nWhy it matters, core ideas, pitfalls."
+        },
+        {
+          "id": "l2",
+          "title": "Examples",
+          "content_md": "Add annotated charts/snips."
+        },
+        {
+          "id": "l3",
+          "title": "Apply It",
+          "content_md": "Draft a small rule and rationale."
+        }
+      ],
+      "quiz": {
+        "questions": [
+          {
+            "id": "q1",
+            "type": "mc",
+            "prompt": "Which practice aligns best?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 1,
+            "explain": "Guardrails matter."
+          },
+          {
+            "id": "q2",
+            "type": "mc",
+            "prompt": "Which is a pitfall?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 2,
+            "explain": "Avoid overfitting/time drift."
+          }
+        ]
+      }
+    },
+    {
+      "id": "m06",
+      "num": 6,
+      "title": "Entry Blueprints: Pullbacks, Breakouts, Reversals",
+      "track": "intermediate",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Concepts",
+          "content_md": "## Entry Blueprints: Pullbacks, Breakouts, Reversals\\n\\nWhy it matters, core ideas, pitfalls."
+        },
+        {
+          "id": "l2",
+          "title": "Examples",
+          "content_md": "Add annotated charts/snips."
+        },
+        {
+          "id": "l3",
+          "title": "Apply It",
+          "content_md": "Draft a small rule and rationale."
+        }
+      ],
+      "quiz": {
+        "questions": [
+          {
+            "id": "q1",
+            "type": "mc",
+            "prompt": "Which practice aligns best?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 1,
+            "explain": "Guardrails matter."
+          },
+          {
+            "id": "q2",
+            "type": "mc",
+            "prompt": "Which is a pitfall?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 2,
+            "explain": "Avoid overfitting/time drift."
+          }
+        ]
+      }
+    },
+    {
+      "id": "m07",
+      "num": 7,
+      "title": "Stops & Targets: Static vs ATR\u00d7R",
+      "track": "intermediate",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Concepts",
+          "content_md": "## Stops & Targets: Static vs ATR\u00d7R\\n\\nWhy it matters, core ideas, pitfalls."
+        },
+        {
+          "id": "l2",
+          "title": "Examples",
+          "content_md": "Add annotated charts/snips."
+        },
+        {
+          "id": "l3",
+          "title": "Apply It",
+          "content_md": "Draft a small rule and rationale."
+        }
+      ],
+      "quiz": {
+        "questions": [
+          {
+            "id": "q1",
+            "type": "mc",
+            "prompt": "Which practice aligns best?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 1,
+            "explain": "Guardrails matter."
+          },
+          {
+            "id": "q2",
+            "type": "mc",
+            "prompt": "Which is a pitfall?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 2,
+            "explain": "Avoid overfitting/time drift."
+          }
+        ]
+      }
+    },
+    {
+      "id": "m08",
+      "num": 8,
+      "title": "Designing Filters: Divergence, ADX Rising, Slope",
+      "track": "intermediate",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Concepts",
+          "content_md": "## Designing Filters: Divergence, ADX Rising, Slope\\n\\nWhy it matters, core ideas, pitfalls."
+        },
+        {
+          "id": "l2",
+          "title": "Examples",
+          "content_md": "Add annotated charts/snips."
+        },
+        {
+          "id": "l3",
+          "title": "Apply It",
+          "content_md": "Draft a small rule and rationale."
+        }
+      ],
+      "quiz": {
+        "questions": [
+          {
+            "id": "q1",
+            "type": "mc",
+            "prompt": "Which practice aligns best?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 1,
+            "explain": "Guardrails matter."
+          },
+          {
+            "id": "q2",
+            "type": "mc",
+            "prompt": "Which is a pitfall?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 2,
+            "explain": "Avoid overfitting/time drift."
+          }
+        ]
+      }
+    },
+    {
+      "id": "m09",
+      "num": 9,
+      "title": "Position Sizing & Expected Drawdown",
+      "track": "intermediate",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Concepts",
+          "content_md": "## Position Sizing & Expected Drawdown\\n\\nWhy it matters, core ideas, pitfalls."
+        },
+        {
+          "id": "l2",
+          "title": "Examples",
+          "content_md": "Add annotated charts/snips."
+        },
+        {
+          "id": "l3",
+          "title": "Apply It",
+          "content_md": "Draft a small rule and rationale."
+        }
+      ],
+      "quiz": {
+        "questions": [
+          {
+            "id": "q1",
+            "type": "mc",
+            "prompt": "Which practice aligns best?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 1,
+            "explain": "Guardrails matter."
+          },
+          {
+            "id": "q2",
+            "type": "mc",
+            "prompt": "Which is a pitfall?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 2,
+            "explain": "Avoid overfitting/time drift."
+          }
+        ]
+      }
+    },
+    {
+      "id": "m10",
+      "num": 10,
+      "title": "Project Workflow: Evaluate \u2192 Design \u2192 Generate",
+      "track": "intermediate",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Concepts",
+          "content_md": "## Project Workflow: Evaluate \u2192 Design \u2192 Generate\\n\\nWhy it matters, core ideas, pitfalls."
+        },
+        {
+          "id": "l2",
+          "title": "Examples",
+          "content_md": "Add annotated charts/snips."
+        },
+        {
+          "id": "l3",
+          "title": "Apply It",
+          "content_md": "Draft a small rule and rationale."
+        }
+      ],
+      "quiz": {
+        "questions": [
+          {
+            "id": "q1",
+            "type": "mc",
+            "prompt": "Which practice aligns best?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 1,
+            "explain": "Guardrails matter."
+          },
+          {
+            "id": "q2",
+            "type": "mc",
+            "prompt": "Which is a pitfall?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 2,
+            "explain": "Avoid overfitting/time drift."
+          }
+        ]
+      }
+    },
+    {
+      "id": "m11",
+      "num": 11,
+      "title": "Evolve Loop: Diagnostics & Iteration",
+      "track": "advanced",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Concepts",
+          "content_md": "## Evolve Loop: Diagnostics & Iteration\\n\\nWhy it matters, core ideas, pitfalls."
+        },
+        {
+          "id": "l2",
+          "title": "Examples",
+          "content_md": "Add annotated charts/snips."
+        },
+        {
+          "id": "l3",
+          "title": "Apply It",
+          "content_md": "Draft a small rule and rationale."
+        }
+      ],
+      "quiz": {
+        "questions": [
+          {
+            "id": "q1",
+            "type": "mc",
+            "prompt": "Which practice aligns best?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 1,
+            "explain": "Guardrails matter."
+          },
+          {
+            "id": "q2",
+            "type": "mc",
+            "prompt": "Which is a pitfall?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 2,
+            "explain": "Avoid overfitting/time drift."
+          }
+        ]
+      }
+    },
+    {
+      "id": "m12",
+      "num": 12,
+      "title": "Volatility Regimes & Adaptive Parameters",
+      "track": "advanced",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Concepts",
+          "content_md": "## Volatility Regimes & Adaptive Parameters\\n\\nWhy it matters, core ideas, pitfalls."
+        },
+        {
+          "id": "l2",
+          "title": "Examples",
+          "content_md": "Add annotated charts/snips."
+        },
+        {
+          "id": "l3",
+          "title": "Apply It",
+          "content_md": "Draft a small rule and rationale."
+        }
+      ],
+      "quiz": {
+        "questions": [
+          {
+            "id": "q1",
+            "type": "mc",
+            "prompt": "Which practice aligns best?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 1,
+            "explain": "Guardrails matter."
+          },
+          {
+            "id": "q2",
+            "type": "mc",
+            "prompt": "Which is a pitfall?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 2,
+            "explain": "Avoid overfitting/time drift."
+          }
+        ]
+      }
+    },
+    {
+      "id": "m13",
+      "num": 13,
+      "title": "Optimization Pitfalls & Robustness Checks",
+      "track": "advanced",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Concepts",
+          "content_md": "## Optimization Pitfalls & Robustness Checks\\n\\nWhy it matters, core ideas, pitfalls."
+        },
+        {
+          "id": "l2",
+          "title": "Examples",
+          "content_md": "Add annotated charts/snips."
+        },
+        {
+          "id": "l3",
+          "title": "Apply It",
+          "content_md": "Draft a small rule and rationale."
+        }
+      ],
+      "quiz": {
+        "questions": [
+          {
+            "id": "q1",
+            "type": "mc",
+            "prompt": "Which practice aligns best?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 1,
+            "explain": "Guardrails matter."
+          },
+          {
+            "id": "q2",
+            "type": "mc",
+            "prompt": "Which is a pitfall?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 2,
+            "explain": "Avoid overfitting/time drift."
+          }
+        ]
+      }
+    },
+    {
+      "id": "m14",
+      "num": 14,
+      "title": "Time Zone Normalization & Session Integrity",
+      "track": "advanced",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Concepts",
+          "content_md": "## Time Zone Normalization & Session Integrity\\n\\nWhy it matters, core ideas, pitfalls."
+        },
+        {
+          "id": "l2",
+          "title": "Examples",
+          "content_md": "Add annotated charts/snips."
+        },
+        {
+          "id": "l3",
+          "title": "Apply It",
+          "content_md": "Draft a small rule and rationale."
+        }
+      ],
+      "quiz": {
+        "questions": [
+          {
+            "id": "q1",
+            "type": "mc",
+            "prompt": "Which practice aligns best?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 1,
+            "explain": "Guardrails matter."
+          },
+          {
+            "id": "q2",
+            "type": "mc",
+            "prompt": "Which is a pitfall?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 2,
+            "explain": "Avoid overfitting/time drift."
+          }
+        ]
+      }
+    },
+    {
+      "id": "m15",
+      "num": 15,
+      "title": "Compliance & Cloud-Only Artifact Governance",
+      "track": "advanced",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Concepts",
+          "content_md": "## Compliance & Cloud-Only Artifact Governance\\n\\nWhy it matters, core ideas, pitfalls."
+        },
+        {
+          "id": "l2",
+          "title": "Examples",
+          "content_md": "Add annotated charts/snips."
+        },
+        {
+          "id": "l3",
+          "title": "Apply It",
+          "content_md": "Draft a small rule and rationale."
+        }
+      ],
+      "quiz": {
+        "questions": [
+          {
+            "id": "q1",
+            "type": "mc",
+            "prompt": "Which practice aligns best?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 1,
+            "explain": "Guardrails matter."
+          },
+          {
+            "id": "q2",
+            "type": "mc",
+            "prompt": "Which is a pitfall?",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "answer": 2,
+            "explain": "Avoid overfitting/time drift."
+          }
+        ]
+      }
+    }
+  ]
+}
