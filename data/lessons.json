@@ -1,0 +1,14 @@
+{
+  "beginner": [
+    {
+      "id": "b1",
+      "title": "What is a Trend?"
+    }
+  ],
+  "full": [
+    {
+      "id": "p1",
+      "title": "ADX & Momentum Filters"
+    }
+  ]
+}

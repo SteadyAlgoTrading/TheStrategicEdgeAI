@@ -1,0 +1,6 @@
+{
+  "evaluate": "Analyze market conditions",
+  "design": "Translate insights into a ruleset",
+  "generate": "Create artifacts (cloud)",
+  "evolve": "Upload backtests & iterate"
+}

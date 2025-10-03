@@ -1,0 +1,1 @@
+<h2>M<%= mod.num %>: <%= mod.title %> — Results</h2><div class='card'><p><strong>Score:</strong> <%= correct %> / <%= total %></p><ul><% feedback.forEach(f=>{ %><li><strong><%= f.id %>:</strong> <%= f.correct ? '✅ Correct' : '❌ Incorrect' %> — <span class='small'><%= f.explain %></span></li><% }) %></ul></div><a class='btn' href='/learning/module/<%= mod.id %>'>Back</a>
