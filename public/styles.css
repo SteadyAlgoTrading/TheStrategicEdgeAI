@@ -1,0 +1,33 @@
+:root{--bg:#0b1020;--card:#0f1730;--muted:#97a0b5;--text:#e6ebff;--accent:#3ea6ff;--gold:#d4af37;--border:#1b274a}
+*{box-sizing:border-box}html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif}
+a{color:var(--accent)}.container{max-width:1100px;margin:0 auto;padding:24px}
+.nav{display:flex;gap:14px;align-items:center;justify-content:space-between;padding:12px 24px;background:#0c142a;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:5}
+.nav .brand{display:flex;align-items:center;gap:12px;font-weight:700}
+.badge{padding:2px 8px;border:1px solid #2a396b;border-radius:999px;font-size:12px;color:#9fb1da}
+.btn{display:inline-block;padding:10px 14px;border-radius:10px;background:#1a2850;border:1px solid #2a396b;color:#e6ebff;font-weight:600}
+.btn.gold{background:linear-gradient(180deg,#f5d98d,#b8942b);border:none;color:#131313}
+.btn.ghost{background:transparent;border:1px solid #2a396b}
+.grid{display:grid;gap:16px}.grid.cols-3{grid-template-columns:repeat(3,1fr)}.grid.cols-2{grid-template-columns:repeat(2,1fr)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:0 4px 20px rgba(0,0,0,.25)}.card h3{margin:0 0 8px}
+.small{font-size:12px;color:var(--muted)}.row{display:flex;gap:12px;flex-wrap:wrap}
+.input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #2a396b;background:#0d152c;color:#e6ebff}
+.table{width:100%;border-collapse:collapse}.table th,.table td{border-bottom:1px solid #213058;padding:10px;text-align:left}
+.footer{padding:30px 24px;text-align:center;color:#8aa0c9}
+#chat .bubble{border-radius:14px;padding:12px}
+#chat .you{background:#1a2850}
+#chat .ai{background:#0e1530;border:1px solid #203160}
+.tag{padding:2px 8px;border:1px solid #2a396b;border-radius:999px;font-size:12px;margin-right:6px}
+.notice{padding:10px;border-left:3px solid #2a396b;background:#0e1530;border-radius:8px}
+
+/* watermark logo */
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  background:url('/brand/logo.svg') no-repeat 24px 14px/180px;
+  opacity:.06; pointer-events:none; z-index:0;
+}
+.nav,.container,.footer{ position:relative; z-index:1 }
+
+/* code blocks */
+pre.code{background:#0a0f24;border:1px solid #202c55;border-radius:10px;padding:14px;
+  overflow:auto;font-family:ui-monospace,Consolas,Menlo,monospace;color:#e6ebff}

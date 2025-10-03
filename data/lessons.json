@@ -1,0 +1,30 @@
+{
+  "beginner": [
+    {
+      "id": "b1",
+      "title": "What is a Trend?"
+    },
+    {
+      "id": "b2",
+      "title": "Moving Averages 101"
+    },
+    {
+      "id": "b3",
+      "title": "Risk per Trade & ATR"
+    }
+  ],
+  "full": [
+    {
+      "id": "p1",
+      "title": "ADX & Momentum Filters"
+    },
+    {
+      "id": "p2",
+      "title": "Session Windows & Volatility Regimes"
+    },
+    {
+      "id": "p3",
+      "title": "Position Sizing & Drawdown Control"
+    }
+  ]
+}
